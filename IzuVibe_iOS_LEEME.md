@@ -1,51 +1,38 @@
-# IzuVibe para iOS â€” adaptaciÃ³n de Trop
+# IzuVibe para iOS — primera compilación
 
-Estado: cÃ³digo adaptado y preparaciÃ³n de compilaciÃ³n. **TodavÃ­a no compilado ni instalado en el iPhone.** Este ZIP no es un IPA instalable.
+**Compilación completada correctamente el 12 de noviembre de 2026 UTC.** El archivo `IzuVibe.ipa` está generado y sin firmar. Todavía no se ha instalado ni probado en tu iPhone.
 
-## Base y funciones reutilizadas
+## Resultado verificado
 
-Base: SwiftyMedia/Trop v0.0.4, commit e44d95911d14e47ca77fb2ad7f7cafce8f90eca5.
-https://github.com/SwiftyMedia/Trop/releases/tag/v0.0.4
+- [Ejecución de GitHub Actions](https://github.com/caizurieta2-png/IzuVibe/actions/runs/43149156842): finalizó con `success` y `BUILD SUCCEEDED`.
+- Fuente ejecutada: commit `4d80f6ea3366a61d891a2bdb04552857b220295d`, que compila el ZIP adaptado verificado mediante SHA-256.
+- Nombre visible: **IzuVibe**. Bundle ID: `app.izuvibe.ios`.
+- Requisito real del binario: **iOS 26.2 o posterior**. Arquitectura: **arm64**, para iPhone físico.
+- IPA: **47.292.257 bytes**. SHA-256: `2291ca86ece852c2835eeae13d1f89bf5240538733b0e5bec41a85e86eb2a578`.
+- Pasaron CRC del ZIP, identidad del plist, formato Mach-O arm64, presencia de ejecutables de frameworks y ausencia de colisiones de rutas entre mayúsculas y minúsculas.
 
-Se conserva la bÃºsqueda y resoluciÃ³n nativa de YouTube Music mediante SwiftyTube/InnerTube; reproductor MPV, biblioteca, playlists, historial, letras, descargas, ecualizador y controles en segundo plano del proyecto original. No es una integraciÃ³n iTunes ni un iframe de la web. Esas funciones heredadas no se han verificado en tu dispositivo; dependen de servicios externos y pueden cambiar.
-La documentaciÃ³n original pide cuenta YouTube Music mediante su web de inicio de sesiÃ³n dentro de la app; no afirma exigir Premium. No entregues contraseÃ±as en el chat. Los secretos de Last.fm que venÃ­an en el cÃ³digo se retiraron: esa integraciÃ³n opcional queda sin configurar. Discord conserva identificadores del proveedor original y no forma parte de las funciones configuradas de esta adaptaciÃ³n.
+Estas comprobaciones verifican el archivo y su compilación. La reproducción, las descargas, el acceso a cuentas y el comportamiento en segundo plano requieren una prueba en el iPhone.
 
-## Cambios de IzuVibe
+## Código publicado
 
-- Nombre visible IzuVibe y bundle ID app.izuvibe.ios.
-- Celeste #65d9ff, tema oscuro y fondo de reproductor negro por defecto.
-- Icono de barras musicales; los iconos alternativos mantienen el sÃ­mbolo propio.
-- Pantalla Acerca de con crÃ©ditos y licencia originales.
-- Esquema compartido Xcode para compilaciÃ³n reproducible.
-- Workflow manual que genera IzuVibe.ipa sin firmar. Se archivaron los workflows de publicaciÃ³n automÃ¡tica originales.
-- El proyecto, mÃ³dulo y target internos siguen llamÃ¡ndose Trop para conservar sus rutas de compilaciÃ³n.
+Repositorio público: https://github.com/caizurieta2-png/IzuVibe
 
-## Requisitos reales
+El código adaptado completo está en `IzuVibe_iOS_Fuente_Trop.zip`, en el repositorio y en esta carpeta. El árbol heredado de la bifurcación corresponde a Trop y se conserva como referencia; el workflow de IzuVibe compila el contenido del ZIP, no ese árbol heredado.
 
-El README original dice iOS26+, pero el proyecto de esta versiÃ³n exige **iOS26.2 o posterior**. Se conserva el requisito real del proyecto; no se redujo sin pruebas.
-La compilaciÃ³n necesita macOS/Xcode. Desde Windows se puede ejecutar en un runner de GitHub. No hace falta comprar un Mac.
+SHA-256 del ZIP de código: `d54443460b1a916b0d634b5bc089fbef26a09331ca5044f8b40050e6f9d8dd99`.
 
-## Compilar desde Windows usando GitHub
+Base: [SwiftyMedia/Trop v0.0.4](https://github.com/SwiftyMedia/Trop/releases/tag/v0.0.4), commit `e44d95911d14e47ca77fb2ad7f7cafce8f90eca5`. Se conserva **GPLv3**, su archivo `LICENSE.txt`, los avisos originales y los créditos visibles en Acerca de. La documentación dentro del ZIP es la instantánea preparada antes de ejecutar esta compilación; este documento actualiza el resultado.
 
-1. Publica este cÃ³digo en un repositorio propio, conservando LICENSE.txt y los crÃ©ditos. Este paso NO se ha realizado por el asistente.
-2. Para evitar costos, el workflow de este paquete solo corre en repositorios pÃºblicos con runner estÃ¡ndar. En un repositorio privado se omitirÃ¡ el job. Revisa siempre las condiciones vigentes de GitHub: https://docs.github.com/en/actions/concepts/billing-and-usage .
-3. Abre Actions â†’ IzuVibe - compilar iOS â†’ Run workflow.
-4. La primera compilaciÃ³n recompila FFmpeg y puede tardar bastante. No se disparÃ³ ninguna compilaciÃ³n ni se consumieron minutos durante la preparaciÃ³n local.
-5. Al terminar, descarga el artefacto IzuVibe-iOS-sin-firmar y extrae IzuVibe.ipa.
-6. Ese IPA requiere firma/instalaciÃ³n con AltStore Classic, SideStore u otro mÃ©todo compatible. No se instala desde Safari con un toque. Una cuenta gratuita de Apple requiere renovaciones periÃ³dicas; AltStore documenta siete dÃ­as.
-   https://faq.altstore.io/altstore-classic/how-to-install-altstore-windows
-   https://faq.altstore.io/altstore-classic/your-altstore
+## Cambios propios y funciones heredadas
 
-## Prueba previa del proyecto original
+Nombre IzuVibe, identificador propio, celeste `#65d9ff`, tema oscuro, fondo de reproductor negro, iconos de barras musicales y créditos a Trop.
 
-Para comprobar la reproducciÃ³n upstream antes de compilar cambios, el autor ofrece un IPA sin firmar en la release v0.0.4 enlazada arriba. Su feed puede estar desincronizado; usa la release estable directa. Ese IPA es Trop original, no la adaptaciÃ³n IzuVibe ni una compilaciÃ³n que haya hecho el asistente.
+Se conserva la búsqueda y resolución nativa de YouTube Music de Trop, reproductor MPV, biblioteca, playlists, historial, letras, descargas, ecualizador y controles en segundo plano. Son funciones heredadas pendientes de verificación en el dispositivo y dependientes de servicios externos. La documentación original pide una cuenta YouTube Music dentro de la app; no afirma exigir Premium. La integración opcional de Last.fm queda sin credenciales configuradas.
 
-## Licencia y atribuciÃ³n
+## Repetir la compilación desde Windows
 
-Trop, SwiftyMedia y colaboradores: GNU GPLv3, texto original en LICENSE.txt sin cambios.
-Las modificaciones de esta adaptaciÃ³n se distribuyen bajo la misma licencia. Si redistribuyes binarios, debes cumplir sus condiciones y proporcionar el cÃ³digo fuente correspondiente. Esto no cambia los permisos ni tÃ©rminos del catÃ¡logo remoto.
-Los avisos y copyright del cÃ³digo heredado permanecen intactos. README.md es el documento original. Los workflows/feed originales se conservan como referencia en upstream/.
+En el repositorio, abre **Actions → IzuVibe - Primera compilacion iOS → Run workflow**. El flujo usa un runner estándar público de macOS y genera el artefacto `IzuVibe-iOS-sin-firmar`, con el IPA y su checksum. FFmpeg quedó guardado en caché después del primer build. [Condiciones vigentes de GitHub Actions](https://docs.github.com/en/actions/concepts/billing-and-usage).
 
-## VerificaciÃ³n realizada
+## Instalar
 
-Se verificaron estructura del plist y esquema XML, JSON de los iconos, consistencia del target y referencias de assets, ausencia de la dependencia privada Discord Social SDK de main, conservaciÃ³n del archivo GPL y cambios de marca. No se ejecutÃ³ Xcode, no se generÃ³ IzuVibe.ipa y no se probÃ³ reproducciÃ³n, descarga o acceso a cuentas en el iPhone. La siguiente verificaciÃ³n necesaria es una compilaciÃ³n real de este cÃ³digo en macOS.
+Sigue `Instalar_IzuVibe_en_iPhone.md`. El IPA necesita firma personal mediante una herramienta compatible. No requiere comprar un Mac; con una cuenta Apple gratuita la firma dura siete días y debe renovarse. La instalación y los inicios de sesión se completan en tus dispositivos.
