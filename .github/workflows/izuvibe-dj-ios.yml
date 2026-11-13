@@ -27,7 +27,7 @@ jobs:
           import os, hashlib, zipfile
           from pathlib import Path
           archive = Path('IzuVibe_iOS_Fuente_v0.2.zip')
-          expected = '39035361ac69b38b76f05b64c85f5e8ebd6cdf6a554ec557b7a8fda34dd1c0e4'
+          expected = 'b8ba05f9e61098ca31ee4b849ff7512484fc66743a221646f883c54d2fdb4379'
           if hashlib.sha256(archive.read_bytes()).hexdigest() != expected:
               raise SystemExit('El paquete no coincide con el codigo revisado.')
           destination = Path(os.environ['IZUVIBE_SOURCE']).resolve()
