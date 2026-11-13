@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 45
     env:
-      IZUVIBE_SOURCE: ${{ runner.temp }}/izuvibe-android-source
+      IZUVIBE_SOURCE: ${{ github.workspace }}/izuvibe-android-source
     steps:
       - name: Obtener el paquete de IzuVibe
         uses: actions/checkout@v6.0.2
@@ -48,7 +48,7 @@ jobs:
       - name: Reutilizar dependencias Gradle
         uses: gradle/actions/setup-gradle@v4
       - name: Probar DJ y compilar APK sin firmar
-        working-directory: ${{ runner.temp }}/izuvibe-android-source/IzuVibe_Android
+        working-directory: ${{ github.workspace }}/izuvibe-android-source/IzuVibe_Android
         run: bash ./build_izuvibe_android.sh
       - name: Adjuntar la fuente correspondiente
         run: |
@@ -58,6 +58,6 @@ jobs:
         uses: actions/upload-artifact@v7.0.1
         with:
           name: IzuVibe-Android-sin-firmar
-          path: ${{ runner.temp }}/izuvibe-android-source/IzuVibe_Android/dist/
+          path: ${{ github.workspace }}/izuvibe-android-source/IzuVibe_Android/dist/
           if-no-files-found: error
           retention-days: 7
