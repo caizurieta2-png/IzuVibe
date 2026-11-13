@@ -1,0 +1,63 @@
+name: IzuVibe - Android DJ 0.2
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: izuvibe-android-dj
+  cancel-in-progress: true
+
+jobs:
+  build-android:
+    if: ${{ github.event.repository.private == false }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      IZUVIBE_SOURCE: ${{ runner.temp }}/izuvibe-android-source
+    steps:
+      - name: Obtener el paquete de IzuVibe
+        uses: actions/checkout@v6.0.2
+      - name: Verificar y extraer el codigo adaptado
+        run: |
+          python3 - <<'PY'
+          import hashlib, os, zipfile
+          from pathlib import Path
+          archive = Path('IzuVibe_Android_Fuente_Metrolist_0.2.zip')
+          expected = '4bb655811d4a7954b762bd8ebfa95c509dc175f1f6018893a57c5a552807e901'
+          if hashlib.sha256(archive.read_bytes()).hexdigest() != expected:
+              raise SystemExit('El paquete Android no coincide con el codigo revisado.')
+          destination = Path(os.environ['IZUVIBE_SOURCE']).resolve()
+          destination.mkdir(parents=True, exist_ok=True)
+          with zipfile.ZipFile(archive) as bundle:
+              for entry in bundle.infolist():
+                  if not (destination / entry.filename).resolve().is_relative_to(destination):
+                      raise SystemExit('Ruta no valida en el archivo.')
+              bundle.extractall(destination)
+          print('Codigo Android verificado y extraido.')
+          PY
+      - name: Preparar Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Preparar SDK Android
+        uses: android-actions/setup-android@v3
+      - name: Reutilizar dependencias Gradle
+        uses: gradle/actions/setup-gradle@v4
+      - name: Probar DJ y compilar APK sin firmar
+        working-directory: ${{ runner.temp }}/izuvibe-android-source/IzuVibe_Android
+        run: bash ./build_izuvibe_android.sh
+      - name: Adjuntar la fuente correspondiente
+        run: |
+          cp IzuVibe_Android_Fuente_Metrolist_0.2.zip "$IZUVIBE_SOURCE/IzuVibe_Android/dist/"
+          cp IzuVibe_Android_Fuente_Metrolist_0.2.zip.sha256 "$IZUVIBE_SOURCE/IzuVibe_Android/dist/"
+      - name: Entregar APK alineado y firmador oficial
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: IzuVibe-Android-sin-firmar
+          path: ${{ runner.temp }}/izuvibe-android-source/IzuVibe_Android/dist/
+          if-no-files-found: error
+          retention-days: 7
