@@ -1,0 +1,70 @@
+name: IzuVibe - DJ e idiomas iOS 0.2
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: izuvibe-first-ios
+  cancel-in-progress: true
+
+jobs:
+  build-ios:
+    if: ${{ github.event.repository.private == false }}
+    runs-on: macos-26
+    timeout-minutes: 360
+    steps:
+      - name: Obtener el paquete de IzuVibe
+        uses: actions/checkout@v6.0.2
+
+      - name: Verificar y extraer el codigo adaptado
+        env:
+          IZUVIBE_SOURCE: ${{ runner.temp }}/izuvibe-source
+        run: |
+          python3 - <<'PY'
+          import os, hashlib, zipfile
+          from pathlib import Path
+          archive = Path('IzuVibe_iOS_Fuente_v0.2.zip')
+          expected = '39035361ac69b38b76f05b64c85f5e8ebd6cdf6a554ec557b7a8fda34dd1c0e4'
+          if hashlib.sha256(archive.read_bytes()).hexdigest() != expected:
+              raise SystemExit('El paquete no coincide con el codigo revisado.')
+          destination = Path(os.environ['IZUVIBE_SOURCE']).resolve()
+          destination.mkdir(parents=True, exist_ok=True)
+          with zipfile.ZipFile(archive) as bundle:
+              for entry in bundle.infolist():
+                  if not (destination / entry.filename).resolve().is_relative_to(destination):
+                      raise SystemExit('Ruta no valida en el archivo.')
+              bundle.extractall(destination)
+          print('Codigo verificado y extraido.')
+          PY
+
+      - name: Preparar Xcode
+        uses: maxim-lobanov/setup-xcode@v1.7.0
+        with:
+          xcode-version: latest-stable
+
+      - name: Reutilizar FFmpeg
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/izuvibe-source/IzuVibe_iOS/build/ffmpeg-kit-xcframeworks
+          key: izuvibe-source-ffmpeg-v9.0.0-arm64-sim-openssl-${{ runner.os }}
+
+      - name: Compilar IzuVibe nativa
+        working-directory: ${{ runner.temp }}/izuvibe-source/IzuVibe_iOS
+        run: bash ./build_izuvibe.sh
+        env:
+          FFMPEG_KIT_TAG: v9.0.0
+          CURRENT_PROJECT_VERSION: ${{ github.run_number }}
+          MARKETING_VERSION: 0.2.0
+
+      - name: Publicar instalador sin firmar
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: IzuVibe-iOS-0.2-sin-firmar
+          path: |
+            ${{ runner.temp }}/izuvibe-source/IzuVibe_iOS/build/IzuVibe.ipa
+            ${{ runner.temp }}/izuvibe-source/IzuVibe_iOS/build/IzuVibe.ipa.sha256
+          if-no-files-found: error
+          retention-days: 7
